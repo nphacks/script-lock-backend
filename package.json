@@ -1,0 +1,20 @@
+{
+  "name": "ip-block-sentinel-backend",
+  "version": "1.0.0",
+  "description": "Backend node+express server for Script Lock",
+  "license": "ISC",
+  "author": "Nishtha Patel",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "docusign-esign": "^8.0.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "nodemon": "^3.1.9"
+  }
+}
