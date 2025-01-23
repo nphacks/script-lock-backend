@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const envelopeService = require('../../services/envelopeService');
 
 // Integrate eSignature REST API functionality
 /**
@@ -11,41 +12,32 @@ const router = express.Router();
  */
 
 // Note to me: Implement Embeded signing for in-app signature + Setting tabs in HTML
-
-/**
- * ===> What all can be done?
- * Search for envelopes
- * Envelopes locking
- * List, move, share and search folders
- * Envelope status codes
- * Document generation
- * Attachments (signer or envelope attachment)
- */
-
 // Note: The developer and production endpoints for most Docusign APIs use slightly different paths. 
 
-// GET all 
-router.get('/', (req, res) => {
-  // This is just an example response
-  res.json({
-    users: [
-      { id: 1, name: 'John Doe' },
-      { id: 2, name: 'Jane Smith' }
-    ]
-  });
-});
+router.post('/create-document', async (req, res) => {
+  try {
+    console.log('API Account ID:', process.env.DOCUSIGN_ACCOUNT_ID);
+    console.log('Integration Key:', process.env.DOCUSIGN_INTEGRATION_KEY);
 
-// GET single 
-router.get('/:id', (req, res) => {
-  const id = req.params.id;
-  res.json({ id, name: 'John Doe' });
-});
+    const { documentData } = req.body;
 
-// POST new 
-router.post('/', (req, res) => {
-  const { name } = req.body;
-  // Here you would typically save to a database
-  res.status(201).json({ id: 3, name });
+    const envelope = await envelopeService.createEnvelope(req, documentData);
+    console.log('Envelope created:', envelope);
+    const signingUrl = await envelopeService.createSigningUrl(
+        envelope.envelopeId,
+        documentData.signerEmail,
+        documentData.signerName,
+        documentData.returnUrl
+    );
+    res.json({ envelopeId: envelope.envelopeId, signingUrl: signingUrl.url });
+  } catch (error) {
+    console.error('Full error details:', {
+      message: error.message,
+      data: error.response?.data,
+      status: error.response?.status
+    });
+    res.status(500).json({ error: 'Failed to create' });
+  }
 });
 
 module.exports = router;

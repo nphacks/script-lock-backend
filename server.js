@@ -1,6 +1,10 @@
 const express = require('express');
+const session = require('express-session');
+const bodyParser = require('body-parser');
 const cors = require('cors');
-const esignatureRouter = require('./routes/docusign/esignature.js');
+const docusignEsignatureRouter = require('./routes/docusign/esignature.js');
+const docusignAuthRouter = require('./routes/docusign/authentication.js');
+const docusignClickRouter = require('./routes/docusign/click.js');
 
 require('dotenv').config();
 
@@ -15,9 +19,17 @@ app.use(cors({
 }));
 app.use(express.json());
 
+app.use(session({
+  secret: 'mxioidjioas',
+  resave: true,
+  saveUninitialized: true
+}));
+
 // Routes
 app.get('/', (req, res) => {return res.json({success: 'All Ok'})});
-app.use('/api/docusign/esign', esignatureRouter);
+app.use('/api/docusign/esign', docusignEsignatureRouter);
+app.use('/api/docusign/auth', docusignAuthRouter);
+app.use('/api/docusign/click', docusignClickRouter);
 
 // Basic error handling
 app.use((err, req, res, next) => {
