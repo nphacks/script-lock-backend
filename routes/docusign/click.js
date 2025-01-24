@@ -22,12 +22,11 @@ router.post('/upload-agreement-terms-of-use', async (req, res) => {
             requireAccept: true,
             documentDisplay: 'document',
         });
-        console.log('displaySettings defined', displaySettings)
         return res.send(await ClickService.uploadAgreementTermsOfUse(req, displaySettings))
     } catch (error) {
         console.error('Full error details:', {
             message: error.message,
-            data: error.response?.data,
+            // data: error.response?.data,
             status: error.response?.status
         });
         res.status(500).json({ error: 'Failed to create' });

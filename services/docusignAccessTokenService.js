@@ -21,7 +21,7 @@ class DocusignAccessTokenService {
                 process.env.DOCUSIGN_PRIVATE_KEY,
                 3600
             );
-            console.log(results.body)
+            // console.log(results.body)
             req.session.access_token = results.body.access_token
             req.session.expired_at = Date.now() + (results.body.expires_in - 60) * 1000
             console.log(req.session)
